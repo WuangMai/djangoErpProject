@@ -1,0 +1,9 @@
+{% extends "erp/base.html" %}
+{% block content %}
+    <h1>Strona Logowania</h1>
+    {% for order in orders %}
+        <h1>{{ order.name }}</h1>
+        <p>{{ order.description }}</p>
+        <p>By {{ order.client }} on {{ order.date_added }}</p>
+    {% endfor %}
+{% endblock content%}
