@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from djangoTestProject import settings
+
 
 class Order(models.Model):
     STATUS = (
@@ -16,7 +18,9 @@ class Order(models.Model):
         choices=STATUS,
         default='before',
     )
-    client = models.ForeignKey(User, on_delete=models.CASCADE)
+    client = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    list_display = ('name', 'status', 'date_added',)
 
     def __str__(self):
         return self.name
