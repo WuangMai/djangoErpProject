@@ -1,21 +1,26 @@
-from django.contrib.auth.models import User, AbstractUser
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, Group
 from django.db import models
-from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-import erp.models
-from .managers import CustomUserManager
+from users.managers import CustomUserManager
 
 
-class CustomUser(AbstractUser):
-    username = None
-    email = models.EmailField(_('email address'), unique=True)
-    first_name = models.CharField(max_length=15)
-    last_name = models.CharField(max_length=50)
-    phone = models.CharField(max_length=10)
-    address = models.CharField(max_length=150)
-    date_added = models.DateTimeField(default=timezone.now)
-
+class CustomUser(AbstractBaseUser, PermissionsMixin):
+    email = models.EmailField(_('email address'), unique=True, max_length=255)
+    first_name = models.CharField(_('Imię'), max_length=15)
+    last_name = models.CharField(_('Nazwisko'), max_length=50)
+    phone = models.CharField(_('Telefon'), max_length=10)
+    address = models.CharField(_('Adres'), max_length=150)
+    is_staff = models.BooleanField(_('Is staff?'), default=False)
+    is_active = models.BooleanField(default=True)
+    is_superuser = models.BooleanField(default=False)
+    groups = models.ManyToManyField(
+        Group,
+        verbose_name=_('groups'),
+        blank=True,
+        related_name="user_set",
+        related_query_name="user",
+    )
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
@@ -24,7 +29,12 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.email
 
+    def has_perm(self, perm, obj=None):
+        "Does the user have a specific permission?"
+        # Simplest possible answer: Yes, always
+        return True
 
-# class Status(models.Model):
-#     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-#     orderList = models.ManyToOneRel(user, erp.models.Order, field_name='client', on_delete=models.DO_NOTHING)
+    def has_module_perms(self, app_label):
+        "Does the user have permissions to view the app `app_label`?"
+        # Simplest possible answer: Yes, always
+        return True

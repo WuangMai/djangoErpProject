@@ -1,12 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.translation import ugettext_lazy as _
 
 from djangoTestProject import settings
 
 
 class Order(models.Model):
     STATUS = (
-        ('before', 'Przed naprawą'),
+        ('before', 'Przed naprawą', ),
         ('in_progress', 'W trakcie naprawy'),
         ('after', 'Po naprawie'),
     )

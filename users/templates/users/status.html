@@ -40,8 +40,19 @@
 <main role="main" class="container">
     <div class="row">
         <div class="col-md-8">
-            Witaj {{ user.first_name }} {{ user.last_name }}
-            {% block content %}{% endblock %}
+            {% block content %}
+                Witaj {{ user.first_name }} {{ user.last_name }}
+                {% if not orders %}
+                    <h3>Wygląda na to, że nie masz u nas żadnych zamówień</h3>
+                {% else %}
+                    {% for order in orders %}
+                        <h1>{{ order.name }}</h1>
+                        <p>{{ order.description }}</p>
+                        <p>Dodane: {{ order.date_added }}</p>
+                        <p>Status: {{ order.get_status_display }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endblock %}
         </div>
     </div>
 </main>
